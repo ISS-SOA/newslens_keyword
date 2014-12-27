@@ -17,12 +17,11 @@ class NewsDynamo < Sinatra::Base
     def get_news(number)
       begin
         newsfound = Thenewslensapi::NewsLens.gets_news
-        if /^\d+$/.match(number)         
+        if /^\d+$/.match(number)
           newsfound.first(number.to_i)
-        
-        else 
+        else
           raise "ouch"
-        end                
+        end
       rescue
         halt 404
       end
@@ -41,10 +40,10 @@ class NewsDynamo < Sinatra::Base
       begin
         newsfound = Thenewslensapi::NewsLens.gets_news
         news_return=Array.new
-        newsfound.each do |i|          
+        newsfound.each do |i|
           if i.has_key?(col_name[0])
             news_return.push(col_name=> i[col_name[0]])
-          else 
+          else
             raise "ouch col"
           end
         end
@@ -61,7 +60,7 @@ class NewsDynamo < Sinatra::Base
       request_path[1] == path
     end
 
-    def tutorial_new(req)    
+    def tutorial_new(req)
       tutorial = Tutorial.new
       tutorial.number = req['number'].to_json
       tutorial
@@ -86,7 +85,7 @@ class NewsDynamo < Sinatra::Base
   end
 
   get '/api/v1/news/:word.json' do
-    content_type :json, 'charset' => 'ISO-8859-1'
+    content_type :json, 'charset' => 'utf-8'
     begin
       get_news_keyword(params[:word]).to_json
     rescue
@@ -123,7 +122,7 @@ class NewsDynamo < Sinatra::Base
     end
 
     tutorial = tutorial_new(req)
-    
+
     if tutorial.save
       status 201
       redirect "/api/v1/tutorials/#{tutorial.id}"
@@ -140,7 +139,7 @@ class NewsDynamo < Sinatra::Base
     rescue
       halt 400
     end
-    
+
     get_news(number[0].to_s).to_json
   end
 end
